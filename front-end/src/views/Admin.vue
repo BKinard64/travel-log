@@ -194,7 +194,7 @@ button {
 }
 
 .suggestion:hover {
-  background-color: #5BDEFF;
+  background-color: #000080;	/* Navy */
   color: #fff;
 }
 </style>

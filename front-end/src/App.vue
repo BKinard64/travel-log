@@ -3,7 +3,7 @@
   <div class="header">
     <router-link to="/">
       <div class="logo">
-        <img src="/ordinary.png">
+        <img src="/globe.png">
       </div>
     </router-link>
     <div class="title">
@@ -28,7 +28,7 @@ html {
 body {
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
-  background: #fff;
+  background: #faf0e6;		/* Linen */
   padding: 0px;
   margin: 0px;
 }
@@ -37,8 +37,13 @@ body {
 .header {
   display: flex;
   padding: 10px 100px 0px 100px;
-  background-color: #5BDEFF;
-  color: #1C454F;
+  background-color: #000080;	/* Navy */
+  color: #faf0e6;		/* Linen */
+}
+
+.logo img {
+  width: 100px;
+  height: 100px;
 }
 
 .title {
