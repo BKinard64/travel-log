@@ -7,7 +7,7 @@
       </div>
     </router-link>
     <div class="title">
-      <h1>Ben Kinard's Travel Log</h1>
+      <h1>Kinard Family Travel Log</h1>
     </div>
   </div>
   <div class="content">

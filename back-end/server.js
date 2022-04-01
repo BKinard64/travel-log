@@ -114,6 +114,7 @@ app.put('/api/locations/:id', async (req, res) => {
       _id: req.params.id
     });
     loc.name = req.body.name;
+    loc.person_id = req.body.person_id;
     loc.dateVisit = req.body.dateVisit;
     await loc.save();
   } catch (error) {

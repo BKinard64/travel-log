@@ -24,13 +24,13 @@
         <button @click="upload">Upload</button>
       </div>
       <div class="upload" v-if="addLocation">
-        <h2>{{addLocation.name}}</h2>
-        <img :src="addLocation.path" />
+        <h2>Successfully uploaded {{addLocation.name}}!</h2>
+        <img src="/success.png" />
       </div>
     </div>
     <div class="heading">
       <div class="circle">2</div>
-      <h2>Edit/Delete an Item</h2>
+      <h2>Edit/Delete a Location</h2>
     </div>
     <div class="edit">
       <div class="form">
@@ -43,6 +43,15 @@
       <div class="upload" v-if="findLocation">
         <input v-model="findLocation.name">
         <p></p>
+        <input v-model="editPersonName" placeholder="Edit Person">
+        <div class="suggestions" v-if="pplEditSuggestions.length > 0">
+          <div class="suggestion" v-for="s in pplEditSuggestions" :key="s.id" @click="selectEditPerson(s)">{{s.name}}
+          </div>
+        </div>
+        <div class="person" v-if="editPerson">
+          <p>{{editPerson.name}} / {{editPerson.gender}} / {{editPerson.age}}</p>
+        </div>
+        <p></p> 
         <textarea v-model="findLocation.dateVisit"/>
         <p></p>
         <img :src="findLocation.path" />
@@ -69,8 +78,10 @@ export default {
       people: [],
       findTitle: "",
       findPersonName: "",
+      editPersonName: "",
       findLocation: null,
       findPerson: null,
+      editPerson: null,
     }
   },
   computed: {
@@ -80,6 +91,11 @@ export default {
     },
     pplSuggestions() {
       let people = this.people.filter(prsn => prsn.name.toLowerCase().startsWith(this.findPersonName.toLowerCase()));
+      return people.sort((a, b) => a.name > b.name);
+    },
+    pplEditSuggestions() {
+      let person = this.people.find(x => x._id === this.findLocation.person_id);
+      let people = this.people.filter(p => p.name.toLowerCase().startsWith(this.editPersonName.toLowerCase()) && p._id != person._id);
       return people.sort((a, b) => a.name > b.name);
     },
   },
@@ -114,6 +130,10 @@ export default {
       this.findPersonName = "";
       this.findPerson = prsn;
     },
+    selectEditPerson(p) {
+      this.editPersonName = "";
+      this.editPerson = p;
+    },
     async deleteLocation(loc) {
       try {
         await axios.delete("/api/locations/" + loc._id);
@@ -128,9 +148,11 @@ export default {
       try {
         await axios.put("/api/locations/" + loc._id, {
           name: this.findLocation.name,
+          person_id: this.editPerson._id,
           dateVisit: this.findLocation.dateVisit
         });
         this.findLocation = null;
+        this.editPerson = null;
         this.getLocations();
         return true;
       } catch (error) {
