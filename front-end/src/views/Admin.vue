@@ -9,6 +9,14 @@
       <div class="form">
         <input v-model="name" placeholder="Location">
         <p></p>
+        <input v-model="findPersonName" placeholder="Search for Person">
+        <div class="suggestions" v-if="pplSuggestions.length > 0">
+          <div class="suggestion" v-for="s in pplSuggestions" :key="s.id" @click="selectPerson(s)">{{s.name}}
+          </div>
+        </div>
+        <div class="person" v-if="findPerson">
+          <p>{{findPerson.name}} / {{findPerson.gender}} / {{findPerson.age}}</p>
+        </div>
         <textarea v-model="dateVisit" placeholder="Date of Visit"/>
         <p></p>
         <input type="file" name="photo" @change="fileChanged">
@@ -25,9 +33,9 @@
     </div>
     <div class="edit">
       <div class="form">
-        <input v-model="findTitle" placeholder="Search">
-        <div class="suggestions" v-if="suggestions.length > 0">
-          <div class="suggestion" v-for="s in suggestions" :key="s.id" @click="selectLocation(s)">{{s.name}}
+        <input v-model="findTitle" placeholder="Search for Location">
+        <div class="suggestions" v-if="locSuggestions.length > 0">
+          <div class="suggestion" v-for="s in locSuggestions" :key="s.id" @click="selectLocation(s)">{{s.name}}
           </div>
         </div>
       </div>
@@ -57,18 +65,26 @@ export default {
       file: null,
       addLocation: null,
       locations: [],
+      people: [],
       findTitle: "",
+      findPersonName: "",
       findLocation: null,
+      findPerson: null,
     }
   },
   computed: {
-    suggestions() {
+    locSuggestions() {
       let locations = this.locations.filter(loc => loc.name.toLowerCase().startsWith(this.findTitle.toLowerCase()));
       return locations.sort((a, b) => a.name > b.name);
-    }
+    },
+    pplSuggestions() {
+      let people = this.people.filter(prsn => prsn.name.toLowerCase().startsWith(this.findPersonName.toLowerCase()));
+      return people.sort((a, b) => a.name > b.name);
+    },
   },
   created() {
     this.getLocations();
+    this.getPeople();
   },
   methods: {
     async getLocations() {
@@ -80,9 +96,22 @@ export default {
         // Do nothing
       }
     },
+    async getPeople() {
+      try {
+        let response = await axios.get("/api/people");
+        this.people = response.data;
+        return true;
+      } catch (error) {
+        // Do nothing
+      }
+    },
     selectLocation(loc) {
       this.findTitle = "";
       this.findLocation = loc;
+    },
+    selectPerson(prsn) {
+      this.findPersonName = "";
+      this.findPerson = prsn;
     },
     async deleteLocation(loc) {
       try {
@@ -117,6 +146,7 @@ export default {
         let r1 = await axios.post('/api/photos', formData);
         let r2 = await axios.post('/api/locations', {
           name: this.name,
+          person_id: this.findPerson._id,
           dateVisit: this.dateVisit,
           path: r1.data.path
         });
@@ -125,7 +155,7 @@ export default {
         // Do nothing 
       }
     },
-  }
+  },
 }
 </script>
 
