@@ -1,9 +1,9 @@
 <template>
 <div class="admin">
-    <h1>The Admin Page!</h1>
+    <h1>Update the Travel Log!</h1>
     <div class="heading">
       <div class="circle">1</div>
-      <h2>Add an Item</h2>
+      <h2>Add a Location</h2>
     </div>
     <div class="add">
       <div class="form">
@@ -17,6 +17,7 @@
         <div class="person" v-if="findPerson">
           <p>{{findPerson.name}} / {{findPerson.gender}} / {{findPerson.age}}</p>
         </div>
+        <p></p>
         <textarea v-model="dateVisit" placeholder="Date of Visit"/>
         <p></p>
         <input type="file" name="photo" @change="fileChanged">
