@@ -3,7 +3,7 @@
   <section class="image-gallery">
     <div class="image" v-for="location in locations" :key="location.id">
       <h2>{{location.name}}</h2>
-      <p>{{getPerson(location.person_id).name}}, {{location.dateVisit}}</p>
+      <p v-if="getPerson(location.person_id) != undefined">{{getPerson(location.person_id).name}}, {{location.dateVisit}}</p>
       <img :src="location.path" />
     </div>
   </section>
@@ -19,12 +19,6 @@ export default {
     return {
      locations: [],
      people: [],
-    }
-  },
-  computed: {
-    getPerson(person_id) {
-      let person = this.people.find(x => x._id === person_id);
-      return person;
     }
   },
   created() {
@@ -49,6 +43,10 @@ export default {
       } catch (error) {
         // Do nothing
       }
+    },
+    getPerson(person_id) {
+      let person = this.people.find(x => x._id === person_id);
+      return person;
     },
   }
 }
