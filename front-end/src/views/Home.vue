@@ -3,7 +3,7 @@
   <section class="image-gallery">
     <div class="image" v-for="location in locations" :key="location.id">
       <h2>{{location.name}}</h2>
-      <p>{{location.dateVisit}}</p>
+      <p>{{getPerson(location.person_id).name}}, {{location.dateVisit}}</p>
       <img :src="location.path" />
     </div>
   </section>
@@ -18,10 +18,18 @@ export default {
   data() {
     return {
      locations: [],
+     people: [],
+    }
+  },
+  computed: {
+    getPerson(person_id) {
+      let person = this.people.find(x => x._id === person_id);
+      return person;
     }
   },
   created() {
     this.getLocations();
+    this.getPeople();
   },
   methods: {
     async getLocations() {
@@ -31,6 +39,15 @@ export default {
         return true;
       } catch (error) {
 	// Do nothing
+      }
+    },
+    async getPeople() {
+      try {
+        let response = await axios.get("/api/people");
+        this.people = response.data;
+        return true;
+      } catch (error) {
+        // Do nothing
       }
     },
   }
